@@ -10,15 +10,16 @@ import java.util.*;
 public class ProductoDAO {
 
     public void insertar(Producto p, int cantidad) throws Exception {
-        String sqlProducto = "INSERT INTO producto(nombre, precioUnitario, idProveedor) VALUES (?, ?, ?)";
+        String sqlProducto = "INSERT INTO producto(identificador,nombre, precioUnitario, idProveedor) VALUES (?,?, ?, ?)";
         String sqlInventario = "INSERT INTO inventario(idProducto, stock) VALUES (?, ?)";
 
         try (Connection con = ConnectionManager.getConnection()) {
             con.setAutoCommit(false);
             try (PreparedStatement psP = con.prepareStatement(sqlProducto, Statement.RETURN_GENERATED_KEYS)) {
-                psP.setString(1, p.getNombre());
-                psP.setDouble(2, p.getPrecio());
-                psP.setInt(3, p.getProveedor().getId());
+                psP.setString(1,p.getIdentificador());
+                psP.setString(2, p.getNombre());
+                psP.setDouble(3, p.getPrecio());
+                psP.setInt(4, p.getProveedor().getId());
                 psP.executeUpdate();
 
                 int idGenerado = 0;

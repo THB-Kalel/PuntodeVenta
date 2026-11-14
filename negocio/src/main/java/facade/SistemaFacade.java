@@ -131,8 +131,8 @@ public class SistemaFacade {
         return resultados;
     }
 
-    public void registrarProducto(String nombre, double precio, int idProveedor, int stock) throws Exception {
-        productoService.registrarProducto(nombre, precio, idProveedor, stock);
+    public void registrarProducto(String identificador, String nombre, double precio, int idProveedor, int stock) throws Exception {
+        productoService.registrarProducto(identificador,nombre, precio, idProveedor, stock);
     }
 
     public void actualizarProducto(int idProducto, String nombre, double precio, int idProveedor) throws Exception {

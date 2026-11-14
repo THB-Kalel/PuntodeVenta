@@ -6,6 +6,7 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import jakarta.annotation.PostConstruct;
 import facade.SistemaFacade;
+import mx.puntodeventa.dao.InventarioDTO;
 import mx.puntodeventa.dao.ProductoDAO;
 import mx.puntodeventa.entity.Inventario;
 import mx.puntodeventa.entity.Producto;
@@ -44,6 +45,8 @@ public class ProductoBean implements Serializable {
     }
 
     public void registrar(Usuario usuarioLogeado) throws Exception {
+        String identificador = generarIdentificador();
+        producto.setIdentificador(identificador);
         System.out.println("Nombre: " + producto.getNombre());
         System.out.println("Precio del producto: " + producto.getNombre());
         System.out.println("id proveedor: " + idProveedorSeleccionado);
@@ -62,6 +65,7 @@ public class ProductoBean implements Serializable {
 
         try {
             facade.registrarProducto(
+                    producto.getIdentificador(),
                     producto.getNombre(),
                     producto.getPrecio(),
                     idProveedorSeleccionado,
@@ -92,6 +96,26 @@ public class ProductoBean implements Serializable {
             e.printStackTrace();
         }
     }
+
+    public String generarIdentificador() throws Exception {
+           return "P"+obtenerNumero();
+    }
+
+    public int obtenerNumero() throws Exception {
+        int numeroMayor = 0;
+        List <InventarioDTO> lista = facade.listarInventario();
+        for(InventarioDTO p : lista){
+            if(p.getIdProducto() != 0){
+                if(p.getIdProducto() > numeroMayor){
+                    numeroMayor = p.getIdProducto();
+                }
+            } else {
+                return 1;
+            }
+        }
+        return numeroMayor;
+    }
+
     private void msgWarn(String mensaje) {
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso", mensaje));

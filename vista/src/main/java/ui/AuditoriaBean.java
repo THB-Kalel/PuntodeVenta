@@ -168,7 +168,6 @@ public class AuditoriaBean implements Serializable {
     public void seleccionarMovimiento(MovimientoInventario mov) {
         this.movimientoSeleccionado = mov;
     }
-
     public void limpiarFiltros() {
         idUsuarioFiltro = null;
         productoFiltro = null;

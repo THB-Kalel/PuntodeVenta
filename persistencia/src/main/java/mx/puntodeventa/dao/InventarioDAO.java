@@ -14,6 +14,7 @@ public class InventarioDAO {
         String sql = """
             SELECT 
                 p.idProducto,
+                p.identificador,
                 p.nombre,
                 i.stock,
                 p.precioUnitario,
@@ -32,6 +33,7 @@ public class InventarioDAO {
                 InventarioDTO dto = new InventarioDTO();
 
                 dto.setIdProducto(rs.getInt("idProducto"));
+                dto.setIdentificador(rs.getString("identificador"));
                 dto.setNombreProducto(rs.getString("nombre"));
 
                 Integer stock = (Integer) rs.getObject("stock");

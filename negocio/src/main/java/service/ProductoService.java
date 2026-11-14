@@ -19,7 +19,7 @@ public class ProductoService {
 
 
 
-    public void registrarProducto(String nombre, double precio, int idProveedor, int stock) throws Exception {
+    public void registrarProducto(String identificador, String nombre, double precio, int idProveedor, int stock) throws Exception {
 
         if (nombre == null || nombre.trim().isEmpty()) {
             throw new Exception("El nombre del producto es obligatorio");
@@ -42,6 +42,7 @@ public class ProductoService {
             throw new Exception("El nombre del producto ya existe en el sistema.");
         }
         Producto producto = new Producto();
+        producto.setIdentificador(identificador);
         producto.setNombre(nombre);
         producto.setPrecio(precio);
         producto.setProveedor(proveedor);
