@@ -775,14 +775,14 @@
                 <p:tab title="Historial de movimientos"
                        rendered="#{AuditoriaBean.puedeVerAuditoria(loginUI.usuarioLogeado)}">
                     <div style="
-        background:#3b5bb0;
-        color:white;
-        padding:12px 15px;
-        margin-bottom:20px;
-        border-radius:4px;
-        font-size:18px;
-        font-weight:bold;
-        text-transform:uppercase;">
+background:#3b5bb0;
+color:white;
+padding:12px 15px;
+margin-bottom:20px;
+border-radius:4px;
+font-size:18px;
+font-weight:bold;
+text-transform:uppercase;">
                         HISTORIAL DE MOVIMIENTOS
                     </div>
 
@@ -790,71 +790,77 @@
 
                         <h:panelGroup layout="block"
                                       style="
-                        display:grid;
-                        grid-template-columns:1fr 1fr;
-                        gap:25px;
-                        margin-bottom:20px;
-                        width:100%;">
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:25px;
+        margin-bottom:20px;
+        width:100%;">
 
                             <h:panelGroup layout="block"
                                           style="
-                            border:1px solid #ddd;
-                            border-radius:6px;
-                            padding:15px;
-                            background:#ffffff;">
+            border:1px solid #ddd;
+            border-radius:6px;
+            padding:15px;
+            background:#ffffff;">
 
                                 <h:outputText
                                         value="TOTAL ENTRADAS:"
                                         style="
-                        display:block;
-                        font-size:13px;
-                        color:#555;
-                        margin-bottom:7px;
-                        font-weight:bold;"/>
+        display:block;
+        font-size:13px;
+        color:#555;
+        margin-bottom:7px;
+        font-weight:bold;"/>
 
                                 <h:outputText
                                         value="#{AuditoriaBean.totalEntradas} unidades"
                                         style="
-                        display:block;
-                        font-size:20px;
-                        color:#22c55e;
-                        font-weight:bold;"/>
+        display:block;
+        font-size:20px;
+        color:#22c55e;
+        font-weight:bold;"/>
 
                             </h:panelGroup>
                             <h:panelGroup layout="block"
                                           style="
-                            border:1px solid #ddd;
-                            border-radius:6px;
-                            padding:15px;
-                            background:#ffffff;">
+            border:1px solid #ddd;
+            border-radius:6px;
+            padding:15px;
+            background:#ffffff;">
 
                                 <h:outputText
                                         value="TOTAL SALIDAS:"
                                         style="
-                        display:block;
-                        font-size:13px;
-                        color:#555;
-                        margin-bottom:7px;
-                        font-weight:bold;"/>
+        display:block;
+        font-size:13px;
+        color:#555;
+        margin-bottom:7px;
+        font-weight:bold;"/>
 
                                 <h:outputText
                                         value="#{AuditoriaBean.totalSalidas} unidades"
                                         style="
-                        display:block;
-                        font-size:20px;
-                        color:#ef4444;
-                        font-weight:bold;"/>
+        display:block;
+        font-size:20px;
+        color:#ef4444;
+        font-weight:bold;"/>
 
                             </h:panelGroup>
 
                         </h:panelGroup>
-                        <h:panelGroup layout="block"
+                        <h:panelGroup id="panelFiltros"
+                                      layout="block"
                                       style="
-                        margin-bottom:20px;
-                        padding:15px;
-                        border:1px solid #e5e7eb;
-                        border-radius:6px;
-                        background:#fafafa;">
+        margin-bottom:20px;
+        padding:15px;
+        border:1px solid #e5e7eb;
+        border-radius:6px;
+        background:#fafafa;">
+
+                            <p:remoteCommand name="buscarHistorial"
+                                             action="#{AuditoriaBean.aplicarFiltros}"
+                                             process="panelFiltros"
+                                             update="areaResultados"/>
 
                             <h:panelGrid columns="4"
                                          cellpadding="8"
@@ -863,18 +869,17 @@
                                     <h:outputText
                                             value="Producto:"
                                             style="
-                            display:block;
-                            font-size:13px;
-                            font-weight:bold;
-                            margin-bottom:5px;
-                            color:#444;"/>
+            display:block;
+            font-size:13px;
+            font-weight:bold;
+            margin-bottom:5px;
+            color:#444;"/>
 
                                     <p:inputText
                                             value="#{AuditoriaBean.productoFiltro}"
                                             placeholder="Código o nombre"
-                                            style="width:100%;">
-
-                                    </p:inputText>
+                                            onkeypress="if(event.keyCode === 13){ buscarHistorial(); return false; }"
+                                            style="width:100%;"/>
 
                                 </h:panelGroup>
                                 <h:panelGroup>
@@ -882,11 +887,11 @@
                                     <h:outputText
                                             value="Usuario:"
                                             style="
-                            display:block;
-                            font-size:13px;
-                            font-weight:bold;
-                            margin-bottom:5px;
-                            color:#444;"/>
+            display:block;
+            font-size:13px;
+            font-weight:bold;
+            margin-bottom:5px;
+            color:#444;"/>
 
                                     <p:selectOneMenu
                                             value="#{AuditoriaBean.idUsuarioFiltro}"
@@ -911,11 +916,11 @@
                                     <h:outputText
                                             value="Desde:"
                                             style="
-                            display:block;
-                            font-size:13px;
-                            font-weight:bold;
-                            margin-bottom:5px;
-                            color:#444;"/>
+            display:block;
+            font-size:13px;
+            font-weight:bold;
+            margin-bottom:5px;
+            color:#444;"/>
 
                                     <p:datePicker
                                             value="#{AuditoriaBean.fechaDesde}"
@@ -928,11 +933,11 @@
                                     <h:outputText
                                             value="Hasta:"
                                             style="
-                            display:block;
-                            font-size:13px;
-                            font-weight:bold;
-                            margin-bottom:5px;
-                            color:#444;"/>
+            display:block;
+            font-size:13px;
+            font-weight:bold;
+            margin-bottom:5px;
+            color:#444;"/>
 
                                     <p:datePicker
                                             value="#{AuditoriaBean.fechaHasta}"
@@ -942,10 +947,21 @@
                                 </h:panelGroup>
                             </h:panelGrid>
                             <div style="
-                display:flex;
-                justify-content:flex-end;
-                gap:10px;
-                margin-top:10px;">
+display:flex;
+justify-content:flex-end;
+gap:10px;
+margin-top:10px;">
+                                <p:commandButton
+                                        value="#{AuditoriaBean.ordenAscendente ? 'Orden: Más antiguos' : 'Orden: Más recientes'}"
+                                        icon="#{AuditoriaBean.ordenAscendente ? 'pi pi-sort-amount-up' : 'pi pi-sort-amount-down'}"
+                                        action="#{AuditoriaBean.alternarOrden}"
+                                        process="panelFiltros"
+                                        update="areaResultados"
+                                        style="
+        background:#0f766e;
+        border:none;
+        border-radius:5px;
+        color:white;"/>
                                 <p:commandButton
                                         value="Limpiar"
                                         icon="pi pi-times"
@@ -953,21 +969,21 @@
                                         process="@this"
                                         update="areaResultados"
                                         style="
-                        background:#6b7280;
-                        border:none;
-                        border-radius:5px;
-                        color:white;"/>
+        background:#6b7280;
+        border:none;
+        border-radius:5px;
+        color:white;"/>
                                 <p:commandButton
-                                        value="Actualizar reporte"
-                                        icon="pi pi-refresh"
+                                        value="Buscar"
+                                        icon="pi pi-search"
                                         action="#{AuditoriaBean.aplicarFiltros}"
-                                        process="@this"
+                                        process="panelFiltros"
                                         update="areaResultados"
                                         style="
-                        background:#4d6fd8;
-                        border:none;
-                        border-radius:5px;
-                        color:white;"/>
+        background:#4d6fd8;
+        border:none;
+        border-radius:5px;
+        color:white;"/>
 
                             </div>
 
@@ -983,6 +999,7 @@
                                 style="width:100%;">
                             <p:column
                                     headerText="Fecha y Hora"
+                                    sortBy="#{mov.fecha}"
                                     style="text-align:center;">
 
                                 <h:outputText value="#{mov.fecha}">
@@ -1004,6 +1021,10 @@
                             <p:column headerText="Producto">
 
                                 <h:outputText
+                                        value="#{mov.producto != null ? mov.producto.identificador : ''}"
+                                        rendered="#{mov.producto != null and not empty mov.producto.identificador}"
+                                        style="font-weight:bold; margin-right:6px; color:#3b5bb0;"/>
+                                <h:outputText
                                         value="#{mov.producto != null ? mov.producto.nombre : 'N/A'}"/>
 
                             </p:column>
@@ -1013,10 +1034,10 @@
                                 <h:outputText
                                         value="#{mov.tipo}"
                                         style="
-                        font-weight:bold;
-                        color:#{mov.tipo == 'Entrada'
-                            ? '#22c55e'
-                            : '#ef4444'};"/>
+        font-weight:bold;
+        color:#{mov.tipo == 'Entrada'
+            ? '#22c55e'
+            : '#ef4444'};"/>
                             </p:column>
                             <p:column
                                     headerText="Cantidad"
@@ -1095,30 +1116,30 @@
 
                                 <h:outputText
                                         value="#{
-                        AuditoriaBean.movimientoSeleccionado.usuario != null
-                        ? AuditoriaBean.movimientoSeleccionado.usuario.nombre
-                        : 'Sistema'
-                    }"/>
+        AuditoriaBean.movimientoSeleccionado.usuario != null
+        ? AuditoriaBean.movimientoSeleccionado.usuario.nombre
+        : 'Sistema'
+    }"/>
                                 <h:outputText
                                         value="Producto:"
                                         style="font-weight:bold;"/>
 
                                 <h:outputText
                                         value="#{
-                        AuditoriaBean.movimientoSeleccionado.producto != null
-                        ? AuditoriaBean.movimientoSeleccionado.producto.nombre
-                        : 'N/A'
-                    }"/>
+        AuditoriaBean.movimientoSeleccionado.producto != null
+        ? AuditoriaBean.movimientoSeleccionado.producto.nombre
+        : 'N/A'
+    }"/>
                                 <h:outputText
                                         value="Código:"
                                         style="font-weight:bold;"/>
 
                                 <h:outputText
                                         value="#{
-                        AuditoriaBean.movimientoSeleccionado.producto != null
-                        ? AuditoriaBean.movimientoSeleccionado.producto.id
-                        : 'N/A'
-                    }"/>
+        AuditoriaBean.movimientoSeleccionado.producto != null
+        ? AuditoriaBean.movimientoSeleccionado.producto.identificador
+        : 'N/A'
+    }"/>
                                 <h:outputText
                                         value="Tipo:"
                                         style="font-weight:bold;"/>
@@ -1137,10 +1158,10 @@
 
                                 <h:outputText
                                         value="#{
-                        AuditoriaBean.movimientoSeleccionado.producto != null
-                        ? AuditoriaBean.movimientoSeleccionado.producto.precio
-                        : 0
-                    }">
+        AuditoriaBean.movimientoSeleccionado.producto != null
+        ? AuditoriaBean.movimientoSeleccionado.producto.precio
+        : 0
+    }">
 
                                     <f:convertNumber
                                             type="currency"
@@ -1158,13 +1179,13 @@
 
                                 <h:outputText
                                         value="#{
-                        AuditoriaBean.calcularValorTotal(
-                            AuditoriaBean.movimientoSeleccionado
-                        )
-                    }"
+        AuditoriaBean.calcularValorTotal(
+            AuditoriaBean.movimientoSeleccionado
+        )
+    }"
                                         style="
-                        font-weight:bold;
-                        color:#2563eb;">
+        font-weight:bold;
+        color:#2563eb;">
 
                                     <f:convertNumber
                                             type="currency"
@@ -1181,33 +1202,33 @@
 
                 </p:tab>
 
-            </p:tabView>
+        </p:tabView>
 
-        </h:form>
+    </h:form>
 
-        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350" appendTo="@(body)">
-            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
-            <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" />
-        </p:confirmDialog>
-
-    </div>
-    <p:confirmDialog widgetVar="confirmDialog" appendTo="@(body)">
-
-        <h:outputText value="Quieres eliminar este producto?
-                             Esta accion es irreversible"
-        title="Confirmacion"/>
-
-        <p:commandButton value="Sí"
-                         action="#{InventarioBean.eliminarProducto}"
-                         process="@this"
-                         update=":formInventario:tablaInventario :formInventario:growl"
-                         oncomplete="PF('confirmDialog').hide()" />
-
-        <p:commandButton value="No"
-                         type="button"
-                         onclick="PF('confirmDialog').hide();" />
-
+    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350" appendTo="@(body)">
+        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+        <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" />
     </p:confirmDialog>
 
+</div>
+<p:confirmDialog widgetVar="confirmDialog" appendTo="@(body)">
+
+    <h:outputText value="Quieres eliminar este producto?
+                             Esta accion es irreversible"
+                  title="Confirmacion"/>
+
+    <p:commandButton value="Sí"
+                     action="#{InventarioBean.eliminarProducto}"
+                     process="@this"
+                     update=":formInventario:tablaInventario :formInventario:growl"
+                     oncomplete="PF('confirmDialog').hide()" />
+
+    <p:commandButton value="No"
+                     type="button"
+                     onclick="PF('confirmDialog').hide();" />
+
+</p:confirmDialog>
+
 </h:body>
-</html>
+        </html>

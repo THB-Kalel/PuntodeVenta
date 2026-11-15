@@ -25,6 +25,7 @@ public class AuditoriaBean implements Serializable {
     private String productoFiltro;
     private Date fechaDesde;
     private Date fechaHasta;
+    private boolean ordenAscendente = false;
 
     private SistemaFacade facade;
 
@@ -93,9 +94,10 @@ public class AuditoriaBean implements Serializable {
                     pasaFiltroProducto = false;
                 } else {
                     String nombreProducto = mov.getProducto().getNombre() != null ? mov.getProducto().getNombre().toLowerCase() : "";
+                    String identificadorProducto = mov.getProducto().getIdentificador() != null ? mov.getProducto().getIdentificador().toLowerCase() : "";
                     String idProducto = String.valueOf(mov.getProducto().getId());
 
-                    pasaFiltroProducto = nombreProducto.contains(filtro) || idProducto.contains(filtro);
+                    pasaFiltroProducto = nombreProducto.contains(filtro) || identificadorProducto.contains(filtro) || idProducto.contains(filtro);
                 }
             }
 
@@ -154,8 +156,15 @@ public class AuditoriaBean implements Serializable {
             if (m1.getFecha() == null || m2.getFecha() == null) {
                 return 0;
             }
-            return m2.getFecha().compareTo(m1.getFecha());
+            return ordenAscendente
+                    ? m1.getFecha().compareTo(m2.getFecha())
+                    : m2.getFecha().compareTo(m1.getFecha());
         });
+    }
+
+    public void alternarOrden() {
+        this.ordenAscendente = !this.ordenAscendente;
+        aplicarFiltros();
     }
 
     public double calcularValorTotal(MovimientoInventario mov) {
@@ -168,6 +177,7 @@ public class AuditoriaBean implements Serializable {
     public void seleccionarMovimiento(MovimientoInventario mov) {
         this.movimientoSeleccionado = mov;
     }
+
     public void limpiarFiltros() {
         idUsuarioFiltro = null;
         productoFiltro = null;
@@ -235,6 +245,14 @@ public class AuditoriaBean implements Serializable {
 
     public void setFechaHasta(Date fechaHasta) {
         this.fechaHasta = fechaHasta;
+    }
+
+    public boolean isOrdenAscendente() {
+        return ordenAscendente;
+    }
+
+    public void setOrdenAscendente(boolean ordenAscendente) {
+        this.ordenAscendente = ordenAscendente;
     }
 
     public int getTotalEntradas() {
