@@ -256,9 +256,9 @@
 
                                     <p:commandButton icon="pi pi-pencil"
                                                      title="Editar producto"
-                                                     action="#{InventarioBean.prepararModificar}"
+                                                     action="#{InventarioBean.prepararModificar(producto)}"
                                                      process="@this"
-                                                     update=":formModificar :formInventario:growl"
+                                                     update=":formInventario:formModificar :formInventario:growl"
                                                      oncomplete="if (!args.validationFailed) PF('dlgModificar').show()"
                                                      styleClass="icon-button edit-icon"/>
 
@@ -332,7 +332,7 @@
 
                                     <f:selectItems value="#{productoBean.listaProveedores}"
                                                    var="prov"
-                                                   itemLabel="#{prov.marca}"
+                                                   itemLabel="#{prov.nombre}"
                                                    itemValue="#{prov.id}"/>
 
                                 </p:selectOneMenu>

@@ -186,84 +186,46 @@ public class InventarioBean implements Serializable {
     }
 
     //AQUI TE PREPARO LA MODIFICACION
-    public void prepararModificar() {
-        System.out.println("Producto seleccionado ID: " + seleccionado.getIdProducto());
-        System.out.println("Proveedor seleccionado ID: " + seleccionado.getIdProveedor());
-        if (seleccionado == null) {
+    public void prepararModificar(InventarioDTO producto) {
+        if (producto == null) {
             msgWarn("Seleccione un producto primero");
+            FacesContext.getCurrentInstance().validationFailed();
             return;
         }
 
+        this.seleccionado = producto;
 
         productoEdit = new InventarioDTO();
-
-
-        productoEdit.setIdProducto(seleccionado.getIdProducto());
-        productoEdit.setNombreProducto(seleccionado.getNombreProducto());
-        productoEdit.setStock(seleccionado.getStock());
-        productoEdit.setPrecio(seleccionado.getPrecio());
-        productoEdit.setIdProveedor(seleccionado.getIdProveedor());
-
-
-        PrimeFaces.current().ajax().update("formModificar");
-        PrimeFaces.current().executeScript("PF('dlgModificar').show()");
+        productoEdit.setIdProducto(producto.getIdProducto());
+        productoEdit.setNombreProducto(producto.getNombreProducto());
+        productoEdit.setStock(producto.getStock());
+        productoEdit.setPrecio(producto.getPrecio());
+        productoEdit.setIdProveedor(producto.getIdProveedor());
     }
-    //AQUI PERMITE MODIFICAR EL PRODUCTO ENTERO NO SOLO EL STOCK
+
     public void modificarProducto() {
-        System.out.println(">>> ENTRANDO A modificarProducto() <<<");
         try {
             if (productoEdit == null || seleccionado == null) {
                 msgWarn("Seleccione un producto primero");
+                FacesContext.getCurrentInstance().validationFailed();
                 return;
             }
 
-            if(productoDAO.existeProductoPorNombre(productoEdit.getNombreProducto())){
+            boolean nombreCambio = !productoEdit.getNombreProducto().trim()
+                    .equalsIgnoreCase(seleccionado.getNombreProducto().trim());
+
+            if (nombreCambio && productoDAO.existeProductoPorNombre(productoEdit.getNombreProducto().trim())) {
                 msgWarn("Ya existe un producto con ese mismo nombre");
+                FacesContext.getCurrentInstance().validationFailed();
                 return;
             }
-
-
-            int stockAnterior = seleccionado.getStock();
-            int stockNuevo = productoEdit.getStock();
-            int diferencia = stockNuevo - stockAnterior;
-
-            String tipoMovimiento = "";
-            if (diferencia > 0) {
-                tipoMovimiento = "Entrada";
-            } else if (diferencia < 0) {
-                tipoMovimiento = "Salida";
-            }
-
-
 
             facade.actualizarProducto(
                     productoEdit.getIdProducto(),
-                    productoEdit.getNombreProducto(),
+                    productoEdit.getNombreProducto().trim(),
                     productoEdit.getPrecio(),
                     productoEdit.getIdProveedor()
             );
-
-            facade.actualizarStock(
-                    productoEdit.getIdProducto(),
-                    productoEdit.getStock()
-            );
-
-            if (!tipoMovimiento.isEmpty()) {
-                try {
-                    mx.puntodeventa.entity.Producto p = new mx.puntodeventa.entity.Producto();
-                    p.setId(productoEdit.getIdProducto());
-                    p.setNombre(productoEdit.getNombreProducto());
-
-                    facade.registrarMovimientoSeguro(
-                            usuarioBean.getUsuario(),
-                            p,
-                            tipoMovimiento,
-                            Math.abs(diferencia)
-                    );
-                } catch (Exception e) {
-                    System.err.println("Error no crítico en auditoría: " + e.getMessage());
-                }
-            }
 
             cargarLista();
             seleccionado = null;
@@ -271,9 +233,9 @@ public class InventarioBean implements Serializable {
 
             msgInfo("Producto modificado correctamente");
 
-        } catch(Exception e) {
-            msgWarn("Error al modificar: Intentelo de nuevo");
-            System.out.println("ERROR CRÍTICO EN MODIFICAR PRODUCTO:");
+        } catch (Exception e) {
+            msgWarn("Error al modificar: Inténtelo de nuevo");
+            FacesContext.getCurrentInstance().validationFailed();
             e.printStackTrace();
         }
     }
