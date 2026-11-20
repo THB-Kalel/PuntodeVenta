@@ -232,9 +232,8 @@ public class VentaBean implements Serializable {
     }
 
     public void corteCaja() {
-
-        System.out.println("ENTRE AL METODO DE CORTE");
-
+        String fecha = java.time.LocalDateTime.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
         try {
 
             String rutaActual = "C:\\RespaldosPOS\\Caja_" + cajaActual.getIdcaja() + "_ACTIVA.csv";
@@ -247,7 +246,7 @@ public class VentaBean implements Serializable {
                 return;
             }
 
-            String nuevoNombre = "C:\\RespaldosPOS\\Caja_" + cajaActual.getIdcaja() + "_Corte_" + System.currentTimeMillis() + ".csv";
+            String nuevoNombre = "C:\\RespaldosPOS\\Corte_de_Caja_" + cajaActual.getIdcaja() + "_" + fecha + ".csv";
             File archivoNuevo = new File(nuevoNombre);
 
             java.nio.file.Files.move(archivoActual.toPath(), archivoNuevo.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);

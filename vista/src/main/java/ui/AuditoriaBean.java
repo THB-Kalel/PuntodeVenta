@@ -23,6 +23,9 @@ public class AuditoriaBean implements Serializable {
 
     private Integer idUsuarioFiltro;
     private String productoFiltro;
+    private Integer idMovimientoFiltro;
+    private String tipoFiltro;
+
     private Date fechaDesde;
     private Date fechaHasta;
     private boolean ordenAscendente = false;
@@ -70,7 +73,9 @@ public class AuditoriaBean implements Serializable {
     }
 
     public void aplicarFiltros() {
+
         listaFiltrada = new ArrayList<>();
+
         totalEntradas = 0;
         totalSalidas = 0;
 
@@ -79,37 +84,36 @@ public class AuditoriaBean implements Serializable {
         }
 
         for (MovimientoInventario mov : listaMovimientos) {
+
             if (mov == null) {
                 continue;
             }
 
-            boolean pasaFiltroUsuario = idUsuarioFiltro == null || idUsuarioFiltro == 0
-                    || (mov.getUsuario() != null && mov.getUsuario().getId() == idUsuarioFiltro);
 
+            boolean pasaFiltroId = idMovimientoFiltro == null || idMovimientoFiltro <= 0 || mov.getId() == idMovimientoFiltro;
+            boolean pasaFiltroUsuario = idUsuarioFiltro == null || idUsuarioFiltro == 0 || (mov.getUsuario() != null && mov.getUsuario().getId() == idUsuarioFiltro);
             boolean pasaFiltroProducto = true;
+
             if (productoFiltro != null && !productoFiltro.trim().isEmpty()) {
                 String filtro = productoFiltro.trim().toLowerCase();
-
                 if (mov.getProducto() == null) {
                     pasaFiltroProducto = false;
                 } else {
                     String nombreProducto = mov.getProducto().getNombre() != null ? mov.getProducto().getNombre().toLowerCase() : "";
                     String identificadorProducto = mov.getProducto().getIdentificador() != null ? mov.getProducto().getIdentificador().toLowerCase() : "";
-                    String idProducto = String.valueOf(mov.getProducto().getId());
-
-                    pasaFiltroProducto = nombreProducto.contains(filtro) || identificadorProducto.contains(filtro) || idProducto.contains(filtro);
+                    String idProducto =
+                            String.valueOf(mov.getProducto().getId());
+                    pasaFiltroProducto =
+                            nombreProducto.contains(filtro)
+                                    || identificadorProducto.contains(filtro)
+                                    || idProducto.contains(filtro);
                 }
             }
-
-          /*
-          AQUI HAZ LOS FILTROS DE LA FECHA, PARA QUE VALIDE TODOS LOS FILTROS JUNTO
-          CON EL FILTRO DE LAS FECHAS, ya te deje una variable
-          pasoFiltroProducto
-           */
+            boolean pasaFiltroTipo = tipoFiltro == null || tipoFiltro.trim().isEmpty() || mov.getTipo().equalsIgnoreCase(tipoFiltro);
             boolean pasaFiltroFecha = true;
+
             if (fechaDesde != null || fechaHasta != null) {
                 Date fechaMov = mov.getFecha();
-
                 if (fechaMov == null) {
                     pasaFiltroFecha = false;
                 } else {
@@ -120,12 +124,10 @@ public class AuditoriaBean implements Serializable {
                         calDesde.set(Calendar.MINUTE, 0);
                         calDesde.set(Calendar.SECOND, 0);
                         calDesde.set(Calendar.MILLISECOND, 0);
-
                         if (fechaMov.before(calDesde.getTime())) {
                             pasaFiltroFecha = false;
                         }
                     }
-
                     if (fechaHasta != null && pasaFiltroFecha) {
                         Calendar calHasta = Calendar.getInstance();
                         calHasta.setTime(fechaHasta);
@@ -133,17 +135,14 @@ public class AuditoriaBean implements Serializable {
                         calHasta.set(Calendar.MINUTE, 59);
                         calHasta.set(Calendar.SECOND, 59);
                         calHasta.set(Calendar.MILLISECOND, 999);
-
                         if (fechaMov.after(calHasta.getTime())) {
                             pasaFiltroFecha = false;
                         }
                     }
                 }
             }
-
-            if (pasaFiltroUsuario && pasaFiltroProducto && pasaFiltroFecha) {
+            if (pasaFiltroId && pasaFiltroUsuario && pasaFiltroProducto && pasaFiltroTipo && pasaFiltroFecha) {
                 listaFiltrada.add(mov);
-
                 if ("Entrada".equalsIgnoreCase(mov.getTipo())) {
                     totalEntradas += mov.getCantidad();
                 } else if ("Salida".equalsIgnoreCase(mov.getTipo())) {
@@ -151,14 +150,12 @@ public class AuditoriaBean implements Serializable {
                 }
             }
         }
-
         listaFiltrada.sort((m1, m2) -> {
+
             if (m1.getFecha() == null || m2.getFecha() == null) {
                 return 0;
             }
-            return ordenAscendente
-                    ? m1.getFecha().compareTo(m2.getFecha())
-                    : m2.getFecha().compareTo(m1.getFecha());
+            return ordenAscendente ? m1.getFecha().compareTo(m2.getFecha()) : m2.getFecha().compareTo(m1.getFecha());
         });
     }
 
@@ -171,7 +168,9 @@ public class AuditoriaBean implements Serializable {
         if (mov == null || mov.getProducto() == null) {
             return 0;
         }
+        System.out.println(mov.getProducto().getNombre()+ " \n" + "Cantidad: " + mov.getCantidad() + "\n" + "Precio unitario: "  + mov.getProducto().getPrecio());
         return mov.getCantidad() * mov.getProducto().getPrecio();
+
     }
 
     public void seleccionarMovimiento(MovimientoInventario mov) {
@@ -179,8 +178,12 @@ public class AuditoriaBean implements Serializable {
     }
 
     public void limpiarFiltros() {
+
         idUsuarioFiltro = null;
         productoFiltro = null;
+        idMovimientoFiltro = null;
+        tipoFiltro = null;
+
         fechaDesde = null;
         fechaHasta = null;
 
@@ -202,6 +205,23 @@ public class AuditoriaBean implements Serializable {
     public List<MovimientoInventario> getListaFiltrada() {
         return listaFiltrada;
     }
+
+    public Integer getIdMovimientoFiltro() {
+        return idMovimientoFiltro;
+    }
+
+    public void setIdMovimientoFiltro(Integer idMovimientoFiltro) {
+        this.idMovimientoFiltro = idMovimientoFiltro;
+    }
+
+    public String getTipoFiltro() {
+        return tipoFiltro;
+    }
+
+    public void setTipoFiltro(String tipoFiltro) {
+        this.tipoFiltro = tipoFiltro;
+    }
+
 
     public void setListaFiltrada(List<MovimientoInventario> listaFiltrada) {
         this.listaFiltrada = listaFiltrada;

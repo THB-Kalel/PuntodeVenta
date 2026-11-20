@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Movimientos | Punto de Venta</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="" name="movimientos.css"/>
+</h:head>
+
+<h:body>
+
+    <div class="layout">
+        <aside id="sidebar" class="sidebar">
+
+            <div class="sidebar-header">
+
+                <div class="brand-icon">
+                    <i class="pi pi-shop"></i>
+                </div>
+
+                <span class="brand-text">Punto de Venta</span>
+
+                <button type="button"
+                        class="sidebar-toggle"
+                        onclick="toggleSidebar()"
+                        title="Contraer menú">
+                    <i class="pi pi-bars"></i>
+                </button>
+
+            </div>
+
+            <div class="sidebar-section">
+                <span class="sidebar-label">MENU PRINCIPAL</span>
+
+                <nav class="sidebar-nav">
+
+                    <a href="Inventario.xhtml"
+                       class="nav-link"
+                       title="Inventario">
+                        <i class="pi pi-box"></i>
+                        <span>Inventario</span>
+                    </a>
+
+                    <a href="usuarios.xhtml"
+                       class="nav-link"
+                       title="Usuarios">
+                        <i class="pi pi-users"></i>
+                        <span>Usuarios</span>
+                    </a>
+
+                    <a href="proveedores.xhtml"
+                       class="nav-link"
+                       title="Proveedores">
+                        <i class="pi pi-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
+
+                    <a href="movimientos.xhtml"
+                       class="nav-link active"
+                       title="Movimientos">
+                        <i class="pi pi-sync"></i>
+                        <span>Movimientos</span>
+                    </a>
+
+                    <a href="configuracion.xhtml"
+                       class="nav-link"
+                       title="Configuración">
+                        <i class="pi pi-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+
+                </nav>
+
+            </div>
+
+            <div class="sidebar-footer">
+                <i class="pi pi-shield"></i>
+                <span class="footer-text">Menu de administrador</span>
+            </div>
+
+        </aside>
+
+        <main class="main-content">
+
+            <header class="topbar">
+
+                <div class="topbar-left">
+                    <span class="breadcrumb">Gestion / Movimientos</span>
+                    <h1>Historial de movimientos</h1>
+                    <p>Consulta las entradas y salidas registradas en el inventario</p>
+                </div>
+
+                <div class="topbar-right">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="pi pi-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-label">Sesion activa</span>
+                            <strong>#{loginUI.usuarioLogeado.nombre}</strong>
+                        </div>
+                    </div>
+                    <h:form id="formCerrarSesion">
+                        <p:commandButton icon="pi pi-sign-out"
+                                         title="Cerrar sesión"
+                                         action="#{loginUI.logout}"
+                                         immediate="true"
+                                         ajax="false"
+                                         styleClass="logout-button"/>
+                    </h:form>
+                </div>
+            </header>
+
+            <section class="page-content">
+
+                <h:form id="formMovimientos">
+
+                    <p:growl id="mensajes"
+                             showDetail="true"
+                             life="3500"/>
+
+                    <p:outputPanel id="resumenCards">
+
+                        <div class="summary-grid">
+
+                            <div class="summary-card">
+
+                                <div class="summary-icon icon-entry">
+                                    <i class="pi pi-arrow-down"></i>
+                                </div>
+
+                                <div class="summary-info">
+                                    <span>Total de entradas</span>
+                                    <strong>#{AuditoriaBean.totalEntradas}</strong>
+                                    <small>Unidades registradas</small>
+                                </div>
+
+                            </div>
+
+                            <div class="summary-card">
+
+                                <div class="summary-icon icon-exit">
+                                    <i class="pi pi-arrow-up"></i>
+                                </div>
+
+                                <div class="summary-info">
+                                    <span>Total de salidas</span>
+                                    <strong>#{AuditoriaBean.totalSalidas}</strong>
+                                    <small>Unidades registradas</small>
+                                </div>
+
+                            </div>
+
+                            <div class="summary-card">
+
+                                <div class="summary-icon icon-history">
+                                    <i class="pi pi-history"></i>
+                                </div>
+
+                                <div class="summary-info">
+                                    <span>Movimientos encontrados</span>
+                                    <strong>#{AuditoriaBean.listaFiltrada.size()}</strong>
+                                    <small>Segun los filtros aplicados</small>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </p:outputPanel>
+
+                    <div class="content-card">
+
+                        <div class="card-heading">
+                            <div>
+                                <h2>Movimientos recientes</h2>
+                                <p>Filtra y consulta las operaciones realizadas en el inventario</p>
+                            </div>
+                            <p:commandButton value="Actualizar"
+                                             icon="pi pi-refresh"
+                                             styleClass="refresh-button"
+                                             action="#{AuditoriaBean.cargarTodosLosMovimientos}"
+                                             update="tablaMovimientos resumenMovimientos resumenCards mensajes"/>
+
+                        </div>
+                        <div class="filters-container">
+                            <div class="filter-field">
+                                <p:outputLabel for="filtroId"
+                                               value="ID del movimiento"/>
+
+                                <p:inputText id="filtroId"
+                                             value="#{AuditoriaBean.idMovimientoFiltro}"
+                                             placeholder="Ej. 102"
+                                             styleClass="filter-input"/>
+
+                            </div>
+                            <div class="filter-field">
+
+                                <p:outputLabel for="fechaDesde"
+                                               value="Fecha desde"/>
+
+                                <p:datePicker id="fechaDesde"
+                                              value="#{AuditoriaBean.fechaDesde}"
+                                              pattern="dd/MM/yyyy"
+                                              placeholder="Seleccionar fecha"
+                                              showIcon="true"
+                                              monthNavigator="true"
+                                              yearNavigator="true"
+                                              styleClass="filter-date"/>
+                            </div>
+
+                            <div class="filter-field">
+
+                                <p:outputLabel for="fechaHasta"
+                                               value="Fecha hasta"/>
+                                <p:datePicker id="fechaHasta"
+                                              value="#{AuditoriaBean.fechaHasta}"
+                                              pattern="dd/MM/yyyy"
+                                              placeholder="Seleccionar fecha"
+                                              showIcon="true"
+                                              monthNavigator="true"
+                                              yearNavigator="true"
+                                              styleClass="filter-date"/>
+                            </div>
+
+                            <div class="filter-field">
+
+                                <p:outputLabel for="filtroUsuario"
+                                               value="Responsable"/>
+
+                                <p:selectOneMenu id="filtroUsuario"
+                                                 value="#{AuditoriaBean.idUsuarioFiltro}"
+                                                 styleClass="filter-select">
+
+                                    <f:selectItem itemLabel="Todos los usuarios"
+                                                  itemValue="0"/>
+
+                                    <f:selectItems value="#{AuditoriaBean.listaUsuarios}"
+                                                   var="usuario"
+                                                   itemLabel="#{usuario.nombre}"
+                                                   itemValue="#{usuario.id}"/>
+
+                                </p:selectOneMenu>
+
+                            </div>
+
+
+                            <div class="filter-field">
+
+                                <p:outputLabel for="filtroTipo"
+                                               value="Tipo de movimiento"/>
+
+                                <p:selectOneMenu id="filtroTipo"
+                                                 value="#{AuditoriaBean.tipoFiltro}"
+                                                 styleClass="filter-select">
+
+                                    <f:selectItem itemLabel="Todos los movimientos"
+                                                  itemValue=""/>
+
+                                    <f:selectItem itemLabel="Entrada"
+                                                  itemValue="Entrada"/>
+
+                                    <f:selectItem itemLabel="Salida"
+                                                  itemValue="Salida"/>
+
+                                </p:selectOneMenu>
+
+                            </div>
+
+                        </div>
+
+                        <div class="filter-actions">
+
+                            <p:commandButton value="Aplicar filtros"
+                                             icon="pi pi-filter"
+                                             styleClass="primary-button"
+                                             action="#{AuditoriaBean.aplicarFiltros}"
+                                             update="tablaMovimientos resumenMovimientos resumenCards mensajes"/>
+
+                            <p:commandButton value="Limpiar"
+                                             icon="pi pi-filter-slash"
+                                             styleClass="clear-button"
+                                             action="#{AuditoriaBean.limpiarFiltros}"
+                                             update="@form"
+                                             process="@this"/>
+
+                        </div>
+
+                        <p:outputPanel id="resumenMovimientos"
+                                       styleClass="table-summary">
+
+                            <span>
+                                Mostrando
+                                <strong>#{AuditoriaBean.listaFiltrada.size()}</strong>
+                                movimientos
+                            </span>
+
+                        </p:outputPanel>
+
+                        <p:dataTable id="tablaMovimientos"
+                                     value="#{AuditoriaBean.listaFiltrada}"
+                                     var="movimiento"
+                                     paginator="true"
+                                     rows="10"
+                                     rowsPerPageTemplate="10,20,50"
+                                     paginatorPosition="bottom"
+                                     emptyMessage="No se encontraron movimientos"
+                                     styleClass="movements-table"
+                                     responsiveLayout="scroll">
+
+                            <p:column headerText="ID"
+                                      sortBy="#{movimiento.id}">
+
+                                <h:outputText value="M-#{movimiento.id}"
+                                              styleClass="movement-id"/>
+
+                            </p:column>
+
+
+                            <p:column headerText="Fecha de operación"
+                                      sortBy="#{movimiento.fecha}">
+
+                                <h:outputText value="#{movimiento.fecha}">
+
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+                                                       timeZone="America/Tijuana"/>
+
+                                </h:outputText>
+
+                            </p:column>
+
+                            <p:column headerText="Responsable"
+                                      sortBy="#{movimiento.usuario.nombre}">
+                                <div class="responsible-cell">
+                                    <span class="responsible-avatar">
+                                        <i class="pi pi-user"></i>
+                                    </span>
+                                    <h:outputText value="#{movimiento.usuario != null ? movimiento.usuario.nombre : 'Sistema'}"/>
+                                </div>
+
+                            </p:column>
+
+                            <p:column headerText="Tipo de movimiento">
+                                <h:panelGroup layout="block"
+                                              styleClass="#{movimiento.tipo eq 'Entrada' ? 'movement-type entry-type' : 'movement-type exit-type'}">
+                                    <i class="#{movimiento.tipo eq 'Entrada' ? 'pi pi-arrow-down' : 'pi pi-arrow-up'}"></i>
+                                    <h:outputText value="#{movimiento.tipo}"/>
+                                </h:panelGroup>
+                            </p:column>
+                            <p:column headerText="Cantidad"
+                                      styleClass="number-column">
+
+                                <h:outputText value="#{movimiento.cantidad}"/>
+
+                            </p:column>
+
+
+                            <p:column headerText="Precio unitario"
+                                      styleClass="number-column">
+
+                                <h:outputText value="#{movimiento.producto.precio}">
+
+                                    <f:convertNumber type="currency"
+                                                     currencySymbol="$"
+                                                     locale="es_MX"/>
+
+                                </h:outputText>
+
+                            </p:column>
+                            <p:column headerText="Costo / venta total"
+                                      styleClass="number-column">
+                                <h:outputText value="#{AuditoriaBean.calcularValorTotal(movimiento)}">
+                                    <f:convertNumber type="currency"
+                                                     currencySymbol="$"
+                                                     locale="es_MX"/>
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </h:form>
+            </section>
+        </main>
+    </div>
+    <h:outputScript target="body">
+        function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('collapsed');
+        }
+    </h:outputScript>
+</h:body>
+</html>

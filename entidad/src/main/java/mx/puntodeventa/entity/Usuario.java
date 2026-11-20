@@ -10,6 +10,10 @@ public class Usuario {
     @Column(name = "idusuario")
     private Integer id;
 
+    @Column(name = "identificador")
+    private String identificador;
+
+
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
@@ -26,6 +30,14 @@ public class Usuario {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getIdentificador() {
+        return identificador;
+    }
+
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
     }
 
     public String getNombre() {

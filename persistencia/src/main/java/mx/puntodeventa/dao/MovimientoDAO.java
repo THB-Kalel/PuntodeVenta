@@ -21,8 +21,6 @@ public class MovimientoDAO {
             ps.setInt(2, m.getUsuario().getId());
             ps.setInt(3, m.getProducto().getId());
             ps.setString(4, m.getTipo());
-
-
             ps.setInt(5, m.getCantidad());
 
             ps.executeUpdate();
@@ -38,10 +36,8 @@ public class MovimientoDAO {
 
     public List<MovimientoInventario> listarTodos() throws Exception {
         List<MovimientoInventario> lista = new ArrayList<>();
-
-
         String sql = "SELECT m.idinventarioMovimientos, m.fecha, m.idUsuario, m.idProducto, m.tipoMovimiento, m.cantidad, " +
-                "u.nombre AS nombreUsuario, p.nombre AS nombreProducto " +
+                "u.nombre AS nombreUsuario, p.nombre AS nombreProducto, p.precioUnitario AS precioUnitario " +
                 "FROM inventariomovimientos m " +
                 "INNER JOIN usuario u ON m.idUsuario = u.idusuario " +
                 "INNER JOIN producto p ON m.idProducto = p.idProducto " +
@@ -61,14 +57,16 @@ public class MovimientoDAO {
 
                 Producto p = new Producto();
                 p.setId(rs.getInt("idProducto"));
-
                 p.setNombre(rs.getString("nombreProducto"));
+                p.setPrecio(rs.getDouble("precioUnitario"));
                 m.setProducto(p);
 
                 Usuario u = new Usuario();
                 u.setId(rs.getInt("idUsuario"));
                 u.setNombre(rs.getString("nombreUsuario"));
                 m.setUsuario(u);
+
+                System.out.println("PRECIO: " + p.getPrecio());
 
                 lista.add(m);
             }
